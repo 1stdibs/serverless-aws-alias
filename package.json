@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/serverless-heaven/serverless-aws-alias"
+    "url": "https://github.com/defnotrobbie/serverless-aws-alias"
   },
   "scripts": {
     "test": "nyc ./node_modules/mocha/bin/_mocha \"test/**/*.js\" -R spec --recursive",
@@ -22,9 +22,9 @@
     "aliases"
   ],
   "bugs": {
-    "url": "https://github.com/serverless-heaven/serverless-aws-alias/issues"
+    "url": "https://github.com/defnotrobbie/serverless-aws-alias/issues"
   },
-  "homepage": "https://github.com/serverless-heaven/serverless-aws-alias#readme",
+  "homepage": "https://github.com/defnotrobbie/serverless-aws-alias#readme",
   "nyc": {
     "exclude": [
       "test/**/*.*"
@@ -55,7 +55,7 @@
     "get-installed-path": "^4.0.8",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",
-    "serverless": "^2.18.0",
+    "serverless": "^2.72.3",
     "sinon": "^9.2.3",
     "sinon-chai": "^3.5.0"
   }
