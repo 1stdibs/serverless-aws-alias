@@ -8,7 +8,7 @@
 
 # Serverless AWS alias plugin
 
-**The plugin requires Serverless 1.12 or later!**
+**The plugin requires Serverless ver. 2!**
 
 This plugin enables use of AWS aliases on Lambda functions. The term alias must not
 be mistaken as the stage. Aliases can be deployed to stages, e.g. if you work on
@@ -28,10 +28,20 @@ protecting the aliased function versions, and many more.
 ## Installation
 
 Add the plugin to your package.json's devDependencies and to the plugins array
-in your `serverless.yml` file. After installation the plugin will automatically
-hook into the deployment process.
-Additionally the new `alias` command is added to Serverless which offers some
-functionality for aliases.
+in your `serverless.yml` file
+
+Terminal:
+```
+npm install --save-dev serverless-aws-alias
+```
+
+serverless.yml:
+```
+plugins:
+  - serverless-aws-alias
+```
+
+After installation the plugin will automatically hook into the deployment process. Additionally the new `alias` command is added to Serverless which offers some functionality for aliases.
 
 ## Deploy the default alias
 
