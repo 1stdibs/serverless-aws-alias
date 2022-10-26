@@ -37,6 +37,18 @@ class AwsAlias {
 		this._alias = this._options.alias || this._stage;
 
 		/**
+		 * (new) register custom variable source--preferred method to define
+		 * plugin variables
+		 * @see https://www.serverless.com/framework/docs/guides/plugins/custom-variables
+		 */
+		this.configurationVariablesSources = {
+			awsAlias: {
+				resolve: async ({ address }) =>
+					address === 'alias' ? { value: this._alias } : null,
+			},
+		};
+
+		/**
 		 * register alias property with provider schema to maintain old
 		 * functionality while meeting new variable resolution standards
 		 */
