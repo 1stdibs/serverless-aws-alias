@@ -35,6 +35,29 @@ class AwsAlias {
 		 */
 		this._stage = this._provider.getStage();
 		this._alias = this._options.alias || this._stage;
+
+		/**
+		 * (new) register custom variable source--preferred method to define
+		 * plugin variables
+		 * @see https://www.serverless.com/framework/docs/guides/plugins/custom-variables
+		 */
+		this.configurationVariablesSources = {
+			awsAlias: {
+				resolve: async ({ address }) =>
+					address === 'alias' ? { value: this._alias } : null,
+			},
+		};
+
+		/**
+		 * register alias property with provider schema to maintain old
+		 * functionality while meeting new variable resolution standards
+		 */
+		this._serverless.configSchemaHandler.schema.properties.provider.properties.alias =
+			{ type: 'string' };
+
+		/**
+		 * (old/bad) set alias property
+		 */
 		this._serverless.service.provider.alias = this._alias;
 
 		/**
@@ -86,12 +109,14 @@ class AwsAlias {
 							alias: {
 								usage: 'Name of the alias',
 								shortcut: 'a',
-								required: true
+								required: true,
+								type: 'string'
 							},
 							verbose: {
 								usage: 'Enable verbose output',
 								shortcut: 'v',
-								required: false
+								required: false,
+								type: 'boolean'
 							}
 						}
 					}
