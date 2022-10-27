@@ -42,7 +42,7 @@ class AwsAlias {
 		 * @see https://www.serverless.com/framework/docs/guides/plugins/custom-variables
 		 */
 		this.configurationVariablesSources = {
-			awsAlias: {
+			dibsServerlessAwsAlias: {
 				resolve: async ({ address }) =>
 					address === 'alias' ? { value: this._alias } : null,
 			},
@@ -197,11 +197,11 @@ class AwsAlias {
 		// Patch hooks to override our event replacements
 		const pluginManager = this.serverless.pluginManager;
 		const logHooks = pluginManager.hooks['logs:logs'];
-		_.pullAllWith(logHooks, [ 'AwsLogs' ], (a, b) => a.pluginName === b);
+		_.pullAllWith(logHooks, ['AwsLogs'], (a, b) => a.pluginName === b);
 
 		// Extend the logs command if available
 		try {
-			const logCommand = pluginManager.getCommand([ 'logs' ]);
+			const logCommand = pluginManager.getCommand(['logs']);
 			logCommand.options.alias = {
 				usage: 'Alias'
 			};
