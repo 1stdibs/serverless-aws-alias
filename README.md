@@ -31,11 +31,13 @@ Add the plugin to your package.json's devDependencies and to the plugins array
 in your `serverless.yml` file
 
 Terminal:
+
 ```
 npm install --save-dev serverless-aws-alias
 ```
 
 serverless.yml:
+
 ```
 plugins:
   - serverless-aws-alias
@@ -57,6 +59,23 @@ guaranteed that the environment and function parameters (memory, etc.) cannot
 be changed for a deployed version by accident, as it can be done with the
 `$LATEST` qualifier.This adds an additional level of stability to your deployment
 process.
+
+## Custom Variable - dibsServerlessAwsAlias:alias
+
+The plugin [registers a custom variable source](https://www.serverless.com/framework/docs/guides/plugins/custom-variables), `dibsServerlessAwsAlias`, with a single variable, `alias`, enabling retrieval of the alias in serverless config.
+
+```yaml
+# serverless.yml
+...
+plugins:
+    - dibs-serverless-aws-alias
+...
+functions:
+    imageConvert:
+        ...
+        description: ${dibsServerlessAwsAlias:alias} - convert images to smaller, web-friendly images
+...
+```
 
 ## Deploy a single function
 
@@ -303,7 +322,7 @@ resources:
         ShardCount: 1
 ```
 
-When a function is deployed to an alias it will now also listen to the *my-kinesis*
+When a function is deployed to an alias it will now also listen to the _my-kinesis_
 stream events. This is useful, if you want to test new implementations with an
 existing resource.
 
@@ -378,6 +397,7 @@ deployed alias you can combine it with the `--alias` option as usual.
 ## The alias command
 
 ## Subcommands
+
 ### alias remove
 
 Removes an alias and all its uniquely referenced functions and function versions.
@@ -437,9 +457,9 @@ If you are not happy with the plugin or just do not like me, you can easily get 
 of the plugin without doing any harm to the deployed stuff. The plugin is
 non-intrusive and does only add some output variables to the main stack:
 
-* Remove all alias stacks via the CloudFormation console or with 'alias remove'
-* Remove the plugin from your serverless.yml and your package.json
-* Deploy the service again (serverless deploy)
+- Remove all alias stacks via the CloudFormation console or with 'alias remove'
+- Remove the plugin from your serverless.yml and your package.json
+- Deploy the service again (serverless deploy)
 
 You're all set.
 
@@ -453,26 +473,27 @@ internal networks. This is possible because each deployed AWS lambda version
 contains its entire configuration (VPC settings, environment, etc.)
 
 ## For developers
+
 ### Lifecycle events
 
 _currently the exposed hooks are not available after the change to the new SLS lifecycle model_
 
 The plugin adds the following lifecycle events that can be hooked by other plugins:
 
-* alias:deploy:uploadArtifacts
+- alias:deploy:uploadArtifacts
 
   Upload alias dependent CF definitions to S3.
 
-* alias:deploy:updateAliasStack
+- alias:deploy:updateAliasStack
 
   Update the alias CF stack.
 
-* alias:deploy:done
+- alias:deploy:done
 
   The Alias plugin is successfully finished. Hook this instead of 'after:deploy:deploy'
   to make sure that your plugin gets triggered right after the alias plugin is done.
 
-* alias:remove:removeStack
+- alias:remove:removeStack
 
   The alias stack is removed from CF.
 
@@ -485,76 +506,88 @@ and _serverless.service.provider.deployedAliasTemplates[]_.
 
 ## Ideas
 
-* The master alias for a stage could be protected by a separate stack policy that
+- The master alias for a stage could be protected by a separate stack policy that
   only allows admin users to deploy or change it. The stage stack does not have
   to be protected individually because the stack cross references prohibit changes
   naturally. It might be possible to introduce some kind of per alias policy.
 
 ## Version history
 
-* 1.8.0
-  * Option to retain lambda function versions [#160][link-160]
-  * **Breaking** drop Node.js 6 support [#161][link-161]
+- 1.8.0
 
-* 1.7.2
-  * Added support for Lambda custom roles [#87][link-87] [#88][link-88]
-  * Added support for dash in alias name when creating api gateway authorizers [#140][link-140]
-  * Configurable master alias [#127][link-127]
-  * Fix for "functionnames" where "functionname" A starts with function name B [#159][link-159]
-  * Dependencies updated
+  - Option to retain lambda function versions [#160][link-160]
+  - **Breaking** drop Node.js 6 support [#161][link-161]
 
-* 1.7.1
-  * Restore compatibility with Serverless 1.27 [#120][link-120]
+- 1.7.2
 
-* 1.7.0
-  * Support existing custom authorizers [#101][link-101]
-  * Support domain-manager plugin [#110][link-110]
-  * Support pseudo-parameter plugin [#112][link-112]
-  * Show logs from arbitrary versions [#62][link-62], [#89][link-89]
+  - Added support for Lambda custom roles [#87][link-87] [#88][link-88]
+  - Added support for dash in alias name when creating api gateway authorizers [#140][link-140]
+  - Configurable master alias [#127][link-127]
+  - Fix for "functionnames" where "functionname" A starts with function name B [#159][link-159]
+  - Dependencies updated
 
-* 1.6.1
- * Fixed custom authorizer references [#102][link-102]
- * Fixed broken DynamoDB stream deployments [#85][link-85]
- * Security: Updated moment
+- 1.7.1
 
-* 1.6.0
- * Fixed issue with request authorizers [#96][link-96]
- * Support subscription to existing SNS topic [#94][link-94]
+  - Restore compatibility with Serverless 1.27 [#120][link-120]
 
-* 1.5.1
-  * Support prewarmup with the warmup plugin [#72][link-72]
-  * Support `_ - +` in alias names [#68][link-68]
-  * Support ANY method type with stage configuration [#80][link-80]
+- 1.7.0
 
-* 1.5.0
-  * Support `serverless deploy function` [#29][link-29]
+  - Support existing custom authorizers [#101][link-101]
+  - Support domain-manager plugin [#110][link-110]
+  - Support pseudo-parameter plugin [#112][link-112]
+  - Show logs from arbitrary versions [#62][link-62], [#89][link-89]
 
-* 1.4.1
-  * Fixed crash when using logs --tail
+- 1.6.1
+- Fixed custom authorizer references [#102][link-102]
+- Fixed broken DynamoDB stream deployments [#85][link-85]
+- Security: Updated moment
 
-* 1.4.0
-  * Add support for S3 server side encryption [#63][link-63]
-  * Add `serverless logs api` command to watch API logs [#60][link-60]
+- 1.6.0
+- Fixed issue with request authorizers [#96][link-96]
+- Support subscription to existing SNS topic [#94][link-94]
 
-* 1.3.0
-  * Support full stage configuration at multiple levels [#57][link-57]
-  * Fix issue when trying to remove a stage completely [#56][link-56]
+- 1.5.1
 
-* 1.2.1
-  * Fix issue when using a Cognito User Pools authorizer [#51][link-51]
-  * IAM roles of removed aliases are not deleted [#50][link-50]
-  * Added note to README to state that per-alias resources do not work until fixed/added in Serverless
+  - Support prewarmup with the warmup plugin [#72][link-72]
+  - Support `_ - +` in alias names [#68][link-68]
+  - Support ANY method type with stage configuration [#80][link-80]
 
-* 1.2.0
-  * Fix issue when stage is specified as Serverless variable [#45][link-45]
-  * Add support for SNS Lambda subscriptions [#43][link-43]
-  * Add support for custom authorizers [#22][link-22]
+- 1.5.0
 
-* 1.1.0
-  * Use stage variable in APIG [#40][link-40]
-  * Fix tail logging [#42][link-42]
+  - Support `serverless deploy function` [#29][link-29]
 
-* 1.0.0 Support "serverless logs" with aliases. First non-alpha!
+- 1.4.1
+
+  - Fixed crash when using logs --tail
+
+- 1.4.0
+
+  - Add support for S3 server side encryption [#63][link-63]
+  - Add `serverless logs api` command to watch API logs [#60][link-60]
+
+- 1.3.0
+
+  - Support full stage configuration at multiple levels [#57][link-57]
+  - Fix issue when trying to remove a stage completely [#56][link-56]
+
+- 1.2.1
+
+  - Fix issue when using a Cognito User Pools authorizer [#51][link-51]
+  - IAM roles of removed aliases are not deleted [#50][link-50]
+  - Added note to README to state that per-alias resources do not work until fixed/added in Serverless
+
+- 1.2.0
+
+  - Fix issue when stage is specified as Serverless variable [#45][link-45]
+  - Add support for SNS Lambda subscriptions [#43][link-43]
+  - Add support for custom authorizers [#22][link-22]
+
+- 1.1.0
+
+  - Use stage variable in APIG [#40][link-40]
+  - Fix tail logging [#42][link-42]
+
+- 1.0.0 Support "serverless logs" with aliases. First non-alpha!
 
 [ico-serverless]: http://public.serverless.com/badges/v3.svg
 [ico-license]: https://img.shields.io/github/license/serverless-heaven/serverless-webpack.svg
@@ -563,16 +596,13 @@ and _serverless.service.provider.deployedAliasTemplates[]_.
 [ico-coverage]: https://coveralls.io/repos/github/serverless-heaven/serverless-aws-alias/badge.svg?branch=master
 [ico-contributors]: https://img.shields.io/github/contributors/serverless-heaven/serverless-aws-alias.svg
 [ico-npm-downloads]: https://img.shields.io/npm/dt/serverless-aws-alias.svg
-
 [link-serverless]: http://www.serverless.com/
 [link-license]: ./blob/master/LICENSE
 [link-npm]: https://www.npmjs.com/package/serverless-aws-alias
 [link-build]: https://travis-ci.org/serverless-heaven/serverless-aws-alias
 [link-coverage]: https://coveralls.io/github/serverless-heaven/serverless-aws-alias?branch=master
 [link-contributors]: https://github.com/serverless-heaven/serverless-aws-alias/graphs/contributors
-
-[comment]: # (Referenced issues)
-
+[comment]: # "Referenced issues"
 [link-22]: https://github.com/serverless-heaven/serverless-aws-alias/issues/22
 [link-29]: https://github.com/serverless-heaven/serverless-aws-alias/issues/29
 [link-40]: https://github.com/serverless-heaven/serverless-aws-alias/issues/40
