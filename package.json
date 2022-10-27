@@ -12,6 +12,12 @@
     "eslint": "node node_modules/eslint/bin/eslint.js --ext .js lib"
   },
   "author": "Frank Schmid <fschmid740@googlemail.com>",
+  "contributors": [
+    {
+      "name": "Robbie Nichols",
+      "email": "robbie.nichols@1stdibs.com"
+    }
+  ],
   "nyc": {
     "exclude": [
       "test/**/*.*"
@@ -29,6 +35,9 @@
     "moment": "^2.29.1",
     "os": "^0.1.1",
     "semver": "^7.3.4"
+  },
+  "peerDependencies": {
+    "serverless": "^2.72.3"
   },
   "devDependencies": {
     "chai": "^4.2.0",
