@@ -60,9 +60,9 @@ be changed for a deployed version by accident, as it can be done with the
 `$LATEST` qualifier.This adds an additional level of stability to your deployment
 process.
 
-## Custom Variable - dibsServerlessAwsAlias:alias
+## Custom Variable - pluginDibsAwsAlias:alias
 
-The plugin [registers a custom variable source](https://www.serverless.com/framework/docs/guides/plugins/custom-variables), `dibsServerlessAwsAlias`, with a single variable, `alias`, enabling retrieval of the alias in serverless config.
+The plugin [registers a custom variable source](https://www.serverless.com/framework/docs/guides/plugins/custom-variables), `pluginDibsAwsAlias`, with a single variable, `alias`, enabling retrieval of the alias in serverless config.
 
 ```yaml
 # serverless.yml
@@ -73,7 +73,7 @@ plugins:
 functions:
     imageConvert:
         ...
-        description: ${dibsServerlessAwsAlias:alias} - convert images to smaller, web-friendly images
+        description: ${pluginDibsAwsAlias:alias} - convert images to smaller, web-friendly images
 ...
 ```
 
