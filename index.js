@@ -42,7 +42,7 @@ class AwsAlias {
 		 * @see https://www.serverless.com/framework/docs/guides/plugins/custom-variables
 		 */
 		this.configurationVariablesSources = {
-			dibsServerlessAwsAlias: {
+			pluginDibsAwsAlias: {
 				resolve: async ({ address }) =>
 					address === 'alias' ? { value: this._alias } : null,
 			},
