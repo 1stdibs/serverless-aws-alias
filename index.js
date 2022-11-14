@@ -21,10 +21,73 @@ const BbPromise = require('bluebird')
 	, updateFunctionAlias = require('./lib/updateFunctionAlias')
 	, deferredOutputs = require('./lib/deferredOutputs');
 
+const aliasStageCommonOptions = {
+	type: 'object',
+	properties: {
+		'cacheDataEncrypted': { type: 'boolean' },
+		'cacheTtlInSeconds': { type: 'integer' },
+		'cachingEnabled': { type: 'boolean' },
+		'dataTraceEnabled': { type: 'boolean' },
+		'loggingLevel': { type: 'string' },
+		'metricsEnabled': { type: 'boolean' },
+		'throttlingBurstLimit': { type: 'integer' },
+		'throttlingRateLimit': { type: 'number' },
+	},
+	additionalProperties: false,
+};
+
+const aliasStageCustomOptions = {
+	type: 'object',
+	properties: {
+		'cacheDataEncrypted': { type: 'boolean' },
+		'cacheTtlInSeconds': { type: 'integer' },
+		'cachingEnabled': { type: 'boolean' },
+		'dataTraceEnabled': { type: 'boolean' },
+		'loggingLevel': { type: 'string' },
+		'metricsEnabled': { type: 'boolean' },
+		'throttlingBurstLimit': { type: 'integer' },
+		'throttlingRateLimit': { type: 'number' },
+		'cacheClusterEnabled': { type: 'boolean' },
+		'cacheClusterSize': { type: 'integer' },
+	},
+	additionalProperties: false,
+};
+
+
+/**
+ * serverless v3 changes the plugin lib naming convention from camelCase to
+ * kebab-case. this function takes a version param and returns the correct lib
+ * key mappings for the version.
+ * 
+ * @typedef {Object} KeyMapV2
+ * @property {'monitorStack'} monitorStack 
+ * @property {'setBucketName'} setBucketName
+ *
+ * @typedef {Object} KeyMapV3
+ * @property {'monitor-stack'} monitorStack 
+ * @property {'set-bucket-name'} setBucketName
+ *
+ * @param {string} version
+ * @returns {KeyMapV2 | KeyMapV3}
+ */
+const resolveAwsLibKeys = version =>
+	// test first char of version string
+	version[0] === '3'
+		? {
+			monitorStack: 'monitor-stack',
+			setBucketName: 'set-bucket-name',
+		}
+		: {
+			monitorStack: 'monitorStack',
+			setBucketName: 'setBucketName',
+		};
+
 class AwsAlias {
 
 	constructor(serverless, options) {
 		this._serverless = serverless;
+		// serverless.version resolves from serverless.yml:frameworkVersion
+		this._awsLibKeys = resolveAwsLibKeys(this._serverless.version);
 		this._options = options || {};
 		this._provider = this._serverless.getProvider('aws');
 
@@ -48,17 +111,6 @@ class AwsAlias {
 			},
 		};
 
-		/**
-		 * register alias property with provider schema to maintain old
-		 * functionality while meeting new variable resolution standards
-		 */
-		this._serverless.configSchemaHandler.schema.properties.provider.properties.alias =
-			{ type: 'string' };
-
-		/**
-		 * (old/bad) set alias property
-		 */
-		this._serverless.service.provider.alias = this._alias;
 
 		/**
 		 * Load stack helpers from Serverless installation.
@@ -68,14 +120,14 @@ class AwsAlias {
 				'plugins',
 				'aws',
 				'lib',
-				'monitorStack')
+				this._awsLibKeys.monitorStack)
 		);
 		const setBucketName = require(
 			Path.join(this._serverless.config.serverlessPath,
 				'plugins',
 				'aws',
 				'lib',
-				'setBucketName')
+				this._awsLibKeys.setBucketName)
 		);
 
 		_.assign(
@@ -121,8 +173,62 @@ class AwsAlias {
 						}
 					}
 				}
-			}
+			},
+			package: {
+				options: {
+					alias: {
+						usage: 'Name of the alias',
+						shortcut: 'a',
+						required: false,
+						type: 'string'
+					},
+				}
+			},
+			deploy: {
+				options: {
+					alias: {
+						usage: 'Name of the alias',
+						shortcut: 'a',
+						required: false,
+						type: 'string'
+					},
+				}
+			},
+			s3deploy: {
+				options: {
+					alias: {
+						usage: 'Name of the alias',
+						shortcut: 'a',
+						required: false,
+						type: 'string'
+					},
+				}
+			},
 		};
+
+		this._serverless.configSchemaHandler.defineCustomProperties({
+			properties: { aliasStage: aliasStageCustomOptions },
+		});
+
+		this._serverless.configSchemaHandler.defineFunctionProperties('aws', {
+			properties: { aliasStage: aliasStageCommonOptions },
+		});
+
+		this._serverless.configSchemaHandler.defineFunctionEventProperties('aws', 'http', {
+			properties: { aliasStage: aliasStageCommonOptions },
+		});
+
+		/**
+		 * register alias property with provider schema to maintain old
+		 * functionality while meeting new variable resolution standards
+		 */
+		this._serverless.configSchemaHandler.schema.properties.provider.properties.alias =
+			{ type: 'string' };
+
+		/**
+		 * (old/bad) set alias property
+		 */
+		this._serverless.service.provider.alias = this._alias;
 
 		this._hooks = {
 			'before:package:initialize': () => BbPromise.bind(this)
