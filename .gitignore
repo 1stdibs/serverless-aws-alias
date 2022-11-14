@@ -1,15 +1,16 @@
-/node_modules
-
-# Jetbrains IDEs
-.idea/
-
-# Platform specific
+node_modules
+npm-debug.log
+yarn-error.log
+.vscode
+.env
 .DS_Store
-
-# Coverage directories used by tools like istanbul
 .nyc_output/
 coverage/
-
-# Code style tools
 .eslintcache
-/*.tgz
+
+#yarn
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
