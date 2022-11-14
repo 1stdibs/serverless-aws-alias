@@ -1,15 +1,8 @@
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
-# This plugin is a copy of [serverless-aws-alias](https://www.npmjs.com/package/serverless-aws-alias)
-
-**NEW**
-
-- Added support for serverless framework ver.3
-- Added support for step functions
-
 # Serverless AWS alias plugin
 
-**The plugin requires Serverless 3!**
+**The plugin requires Serverless ver. 2 or ver. 3!**
 
 This plugin enables use of AWS aliases on Lambda functions. The term alias must not
 be mistaken as the stage. Aliases can be deployed to stages, e.g. if you work on
