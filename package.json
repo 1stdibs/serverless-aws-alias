@@ -1,6 +1,6 @@
 {
   "name": "dibs-serverless-aws-alias",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "description": "Serverless plugin to support AWS function aliases",
   "main": "index.js",
   "repository": {
